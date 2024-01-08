@@ -1,0 +1,13 @@
+{
+  "KeywordLists": [
+    {
+      "Keywords": [
+        "DM",
+        "direct message",
+        "dmed"
+      ],
+      "WarningMessage": "**🚨 Attention:** Be cautious of impersonators! The <TEAM_NAME> will never initiate direct messages (DMs) to users.",
+      "externalLinkRequired": false
+    }
+  ]
+}
