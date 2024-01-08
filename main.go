@@ -24,6 +24,29 @@ type Config struct {
 	} `json:"keyword_lists"`
 }
 
+const (
+	LINK_REGEX = `https?://[^\s/$.?#].[^\s]*`
+)
+
+// fetchRoles fetches the roles of a member and returns them as a map for easy lookup.
+func fetchRoles(s *discordgo.Session, guildID, memberID string) (map[string]bool, error) {
+	member, err := s.GuildMember(guildID, memberID)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching member: %w", err)
+	}
+
+	roles := make(map[string]bool)
+	for _, roleID := range member.Roles {
+		role, err := s.State.Role(guildID, roleID)
+		if err != nil {
+			return nil, fmt.Errorf("error fetching role: %w", err)
+		}
+		roles[role.Name] = true
+	}
+
+	return roles, nil
+}
+
 func main() {
 	fmt.Println("Starting bot Warnings Bot...")
 
@@ -54,6 +77,9 @@ func main() {
 		log.Fatalf("Error creating Discord session: %v", err)
 	}
 
+	// Precompile the link regex.
+	linkRegex := regexp.MustCompile(`https?://[^\s/$.?#].[^\s]*`)
+
 	// Register the messageCreate callback
 	dg.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// Ignore messages sent by the bot itself
@@ -66,50 +92,37 @@ func main() {
 
 		// Check if the message contains any of the keywords from any keyword list
 		for _, keywordList := range config.KeywordLists {
-			linkRegex := regexp.MustCompile(`https?://[^\s/$.?#].[^\s]*`)
-
 			// Check if external link is required and if the message contains one
 			if keywordList.ExternalLinkRequired && !linkRegex.MatchString(content) {
 				continue // Skip if external link is required but not found
 			}
 
 			// Fetch the roles of the message sender
-			member, err := s.GuildMember(m.GuildID, m.Author.ID)
+			roles, err := fetchRoles(s, m.GuildID, m.Author.ID)
 			if err != nil {
-				log.Printf("Error fetching member: %v", err)
-				continue
+				log.Printf("%v", err)
+				return
 			}
 
-			// Initialize flags for role checks
+			// Check if the user has any of the required roles
 			hasRequiredRole := len(keywordList.RequiredRoles) == 0
-			hasExcludedRole := false
-			for _, roleID := range member.Roles {
-				role, err := s.State.Role(m.GuildID, roleID)
-				if err != nil {
-					log.Printf("Error fetching role: %v", err)
-					continue
-				}
-
-				// Check against excluded roles
-				for _, excludedRole := range keywordList.ExcludedRoles {
-					if role.Name == excludedRole {
-						hasExcludedRole = true
-						break
-					}
-				}
-
-				// Check against required roles
-				if !hasRequiredRole {
-					for _, requiredRole := range keywordList.RequiredRoles {
-						if role.Name == requiredRole {
-							hasRequiredRole = true
-							break
-						}
-					}
+			for _, requiredRole := range keywordList.RequiredRoles {
+				if requiredRole != "" && roles[requiredRole] {
+					hasRequiredRole = true
+					break
 				}
 			}
 
-			// Skip this message if the user has an excluded role or does not have a required role
+			// Check if the user has any of the excluded roles
+			hasExcludedRole := false
+			for _, excludedRole := range keywordList.ExcludedRoles {
+				if excludedRole != "" && roles[excludedRole] {
+					hasExcludedRole = true
+					break
+				}
+			}
+
+			// If the user has an excluded role or doesn't have any of the required roles, skip this message
 			if hasExcludedRole || !hasRequiredRole {
 				continue
 			}
