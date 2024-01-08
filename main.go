@@ -19,6 +19,7 @@ type Config struct {
 		WarningMessage       string   `json:"warning_message"`
 		ExternalLinkRequired bool     `json:"external_link_required"`
 		RequiredRoles        []string `json:"required_roles"`
+		ExcludedRoles        []string `json:"excluded_roles"`
 		KeywordRegex         *regexp.Regexp
 	} `json:"keyword_lists"`
 }
@@ -73,7 +74,7 @@ func main() {
 			}
 
 			// Check if RequiredRoles is empty or if the user has one of the required roles
-			if len(keywordList.RequiredRoles) == 0 {
+			if len(keywordList.RequiredRoles) == 0 && len(keywordList.ExcludedRoles) == 0 {
 				// If RequiredRoles is empty, the bot responds to all messages
 				// Continue checking for keywords and sending warnings
 			} else {
@@ -84,7 +85,7 @@ func main() {
 					continue
 				}
 
-				// Check if the message sender has any of the required roles
+				// Check if the message sender has any of the required roles.
 				hasRequiredRole := false
 				for _, roleID := range member.Roles {
 					role, err := s.State.Role(m.GuildID, roleID)
@@ -93,7 +94,14 @@ func main() {
 						continue
 					}
 
-					// Check if the role name matches any of the required roles
+					// Check if the role name matches any of the excluded roles.
+					for _, excludedRole := range keywordList.ExcludedRoles {
+						if role.Name == excludedRole {
+							return // User has an excluded role, skip this message.
+						}
+					}
+
+					// Check if the role name matches any of the required roles.
 					for _, requiredRole := range keywordList.RequiredRoles {
 						if role.Name == requiredRole {
 							hasRequiredRole = true
@@ -101,23 +109,23 @@ func main() {
 						}
 					}
 					if hasRequiredRole {
-						break // User has a required role, no need to check further
+						break // User has a required role, no need to check further.
 					}
 				}
 
-				// If the user doesn't have any of the required roles, skip this message
+				// If the user doesn't have any of the required roles, skip this message.
 				if !hasRequiredRole {
 					continue
 				}
 			}
 
-			// Create a regular expression pattern dynamically for all keywords in the list with case-insensitivity
+			// Create a regular expression pattern dynamically for all keywords in the list with case-insensitivity.
 			keywordsPattern := `(?i)\b(` + strings.Join(keywordList.Keywords, "|") + `)\b`
 			dmRegex := regexp.MustCompile(keywordsPattern)
 
-			// Check if the message contains any of the specified keywords dynamically
+			// Check if the message contains any of the specified keywords dynamically.
 			if dmRegex.MatchString(content) {
-				// Reply with the warning message
+				// Reply with the warning message.
 				_, err := s.ChannelMessageSendReply(m.ChannelID, keywordList.WarningMessage, m.Reference())
 				if err != nil {
 					log.Printf("Error sending message: %v", err)
