@@ -58,6 +58,7 @@ Here's a breakdown of the fields:
   - **keywords**: An array of strings. The bot will monitor chat messages for these keywords.
   - **warning_message**: A string that defines the warning message the bot will send when a chat message matches the keywords.
   - **external_link_required**: A boolean value. If set to `true`, the bot will only issue a warning if the message contains both the specified keywords and an external link.
+  - **excluded_roles**: An array of strings. If specified, the bot will not issue a warning if the message author has at least one of the roles in this list.
   - **required_roles**: An array of strings. If specified, the bot will only issue a warning if the message author has at least one of the roles in this list.
 
 Please note that all string comparisons performed by the bot are case-insensitive.
