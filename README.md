@@ -1,6 +1,6 @@
 # Warnings Discord Bot
 
-![Discord Logo](discord_logo.png)
+<img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5061df29d55a92d945_full_logo_blurple_RGB.svg" width="200"><br>
 
 **Warnings Discord Bot** is a simple Discord bot written in Go that monitors messages for specific keywords and responds with warning messages. It is designed to help maintain a respectful and safe chat environment within your Discord server.
 
@@ -48,4 +48,3 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-# warnings-discord-bot
