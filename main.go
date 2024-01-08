@@ -73,50 +73,45 @@ func main() {
 				continue // Skip if external link is required but not found
 			}
 
-			// Check if RequiredRoles is empty or if the user has one of the required roles
-			if len(keywordList.RequiredRoles) == 0 && len(keywordList.ExcludedRoles) == 0 {
-				// If RequiredRoles is empty, the bot responds to all messages
-				// Continue checking for keywords and sending warnings
-			} else {
-				// Fetch the roles of the message sender
-				member, err := s.GuildMember(m.GuildID, m.Author.ID)
+			// Fetch the roles of the message sender
+			member, err := s.GuildMember(m.GuildID, m.Author.ID)
+			if err != nil {
+				log.Printf("Error fetching member: %v", err)
+				continue
+			}
+
+			// Initialize flags for role checks
+			hasRequiredRole := len(keywordList.RequiredRoles) == 0
+			hasExcludedRole := false
+			for _, roleID := range member.Roles {
+				role, err := s.State.Role(m.GuildID, roleID)
 				if err != nil {
-					log.Printf("Error fetching member: %v", err)
+					log.Printf("Error fetching role: %v", err)
 					continue
 				}
 
-				// Check if the message sender has any of the required roles.
-				hasRequiredRole := false
-				for _, roleID := range member.Roles {
-					role, err := s.State.Role(m.GuildID, roleID)
-					if err != nil {
-						log.Printf("Error fetching role: %v", err)
-						continue
+				// Check against excluded roles
+				for _, excludedRole := range keywordList.ExcludedRoles {
+					if role.Name == excludedRole {
+						hasExcludedRole = true
+						break
 					}
+				}
 
-					// Check if the role name matches any of the excluded roles.
-					for _, excludedRole := range keywordList.ExcludedRoles {
-						if role.Name == excludedRole {
-							return // User has an excluded role, skip this message.
-						}
-					}
-
-					// Check if the role name matches any of the required roles.
+				// Check against required roles
+				if !hasRequiredRole {
 					for _, requiredRole := range keywordList.RequiredRoles {
 						if role.Name == requiredRole {
 							hasRequiredRole = true
 							break
 						}
 					}
-					if hasRequiredRole {
-						break // User has a required role, no need to check further.
-					}
 				}
+			}
 
-				// If the user doesn't have any of the required roles, skip this message.
-				if !hasRequiredRole {
-					continue
-				}
+			// Skip this message if the user has an excluded role or does not have a required role
+			if hasExcludedRole || !hasRequiredRole {
+				continue
 			}
 
 			// Create a regular expression pattern dynamically for all keywords in the list with case-insensitivity.
