@@ -1,6 +1,6 @@
 # Github action that uses the 'release-please' tool to update the version, changelog
 # and create new releases.
-name: Livepeer exporter release
+name: Warnings Discord Bot release
 on:
   push:
     branches:

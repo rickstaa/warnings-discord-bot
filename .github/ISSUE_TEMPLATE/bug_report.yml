@@ -36,7 +36,7 @@ body:
       value: |
         - Run method: [e.g. local, docker]
         - OS: [e.g. Windows, Mac, Linux]
-        - Exporter version: [e.g. 1.0.0]
+        - Bot version: [e.g. 1.0.0]
   - type: textarea
     attributes:
       label: Additional context

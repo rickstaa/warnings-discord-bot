@@ -19,6 +19,8 @@ Before you can run the bot, make sure you have the following:
 
 ## How to Use
 
+### Run bot locally
+
 1. Clone [this repository](https://github.com/rickstaa/warnings-discord-bot) to your local machine.
 2. Modify the [config.json](config/config.json) file to include the keywords you want to monitor and the warning messages you want to send in response to keyword matches.
 3. Setup a discord application (see [this guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#what-is-a-token-anyway)). Ensure that the [message content intent](https://discord.com/developers/docs/topics/gateway#list-of-intents) is enabled. Also, ensure that the `Send Messages` and `Read Message History` permissions are requested on the URL Generator step.
@@ -26,6 +28,19 @@ Before you can run the bot, make sure you have the following:
 5. Build the bot using `go build`
 6. Rename the `.env.template` file to `.env` and insert the required environmental variables.
 7. Run the bot using `./warnings-discord-bot`.
+
+### Running the bot with Docker
+
+The Warnings Discord Bot can be run using the Docker image available on [Docker Hub](https://hub.docker.com/r/rickstaa/warnings-discord-bot). To pull and run the bot from Docker Hub, use the following command:
+
+```bash
+docker run --name warnings-discord-bot rickstaa/warnings-discord-bot:latest
+```
+
+Please ensure that you have a `.env` file in the current working directory that contains the required environmental variables. You can find an example of this file [here](./.env.template) or add the `DISCORD_BOT_TOKEN` as an environmental variable to the `docker run` command.
+
+> [!NOTE]
+> This repository also contains a [DockerFile](./Dockerfile) and [docker-compose.yml](./docker-compose.yml) file. These files can be used to build and run the bot locally. To do this, clone this repository and run `docker compose up` in the repository's root directory.
 
 ## Configuration
 

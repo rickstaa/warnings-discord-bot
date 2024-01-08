@@ -1,6 +1,3 @@
-# Environment files
-.env
-
 # Binary files
 warnings-discord-bot
 
@@ -9,3 +6,6 @@ warnings-discord-bot
 *.code-workspace
 __debug*
 __debug_bin*
+
+# Secret files
+.env
