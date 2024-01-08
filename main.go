@@ -25,9 +25,6 @@ type Config struct {
 
 func main() {
 	fmt.Println("Starting bot Warnings Bot...")
-	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
 
 	// Parse config file.
 	configFile, err := os.ReadFile("config/config.json")
@@ -49,6 +46,7 @@ func main() {
 	}
 
 	// Retrieve bot token.
+	_ = godotenv.Load()
 	token := os.Getenv("DISCORD_BOT_TOKEN")
 	dg, err := discordgo.New("Bot " + token)
 	if err != nil {
