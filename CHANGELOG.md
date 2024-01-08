@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/rickstaa/warnings-discord-bot/compare/v1.0.0...v1.1.0) (2024-01-08)
+
+
+### Features
+
+* add 'excluded_roles' config parameter ([#9](https://github.com/rickstaa/warnings-discord-bot/issues/9)) ([0a5f661](https://github.com/rickstaa/warnings-discord-bot/commit/0a5f6615ac3b4a13cd47cb75499818df1a7aa354))
+
 ## 1.0.0 (2024-01-08)
 
 
