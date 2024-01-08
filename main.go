@@ -120,7 +120,7 @@ func main() {
 			// Check if the message contains any of the specified keywords dynamically
 			if dmRegex.MatchString(content) {
 				// Reply with the warning message
-				_, err := s.ChannelMessageSend(m.ChannelID, keywordList.WarningMessage)
+				_, err := s.ChannelMessageSendReply(m.ChannelID, keywordList.WarningMessage, m.Reference())
 				if err != nil {
 					log.Printf("Error sending message: %v", err)
 				}
