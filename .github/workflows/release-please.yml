@@ -1,0 +1,20 @@
+# Github action that uses the 'release-please' tool to update the version, changelog
+# and create new releases.
+name: Livepeer exporter release
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        with:
+          command: manifest
+          token: ${{ secrets.PAT }}
