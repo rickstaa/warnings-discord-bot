@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/rickstaa/warnings-discord-bot/compare/v1.1.0...v1.1.1) (2024-01-08)
+
+
+### Bug Fixes
+
+* fix no roles condition ([#11](https://github.com/rickstaa/warnings-discord-bot/issues/11)) ([683f962](https://github.com/rickstaa/warnings-discord-bot/commit/683f962fcf5f74a86bc52de2287c7c4e3aca797a))
+
 ## [1.1.0](https://github.com/rickstaa/warnings-discord-bot/compare/v1.0.0...v1.1.0) (2024-01-08)
 
 
