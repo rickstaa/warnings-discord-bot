@@ -43,7 +43,7 @@ Please note that all string comparisons performed by the bot are case-insensitiv
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for more details.
+We welcome contributions 🚀! Please see our [Contributing Guide](CONTRIBUTING.md) for more details.
 
 ## License
 
