@@ -1,13 +1,14 @@
 {
-  "KeywordLists": [
+  "keyword_lists": [
     {
-      "Keywords": [
+      "keywords": [
         "DM",
         "direct message",
         "dmed"
       ],
-      "WarningMessage": "**🚨 Attention:** Be cautious of impersonators! The <TEAM_NAME> will never initiate direct messages (DMs) to users.",
-      "externalLinkRequired": false
+      "warning_message": "**🚨 Attention:** Be cautious of impersonators! The <TEAM_NAME> will never initiate direct messages (DMs) to users.",
+      "external_link_required": false,
+      "required_roles": [""]
     }
   ]
 }

@@ -3,3 +3,9 @@
 
 # Binary files
 warnings-discord-bot
+
+# IDE files
+.vscode
+*.code-workspace
+__debug*
+__debug_bin*

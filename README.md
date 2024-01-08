@@ -27,6 +27,20 @@ Before you can run the bot, make sure you have the following:
 6. Rename the `.env.template` file to `.env` and insert the required environmental variables.
 7. Run the bot using `./warnings-discord-bot`.
 
+## Configuration
+
+The bot's behaviour can be customized through the [config.json](config/config.json) file. This JSON file contains several fields that define the bot's keyword monitoring and response behaviour.
+
+Here's a breakdown of the fields:
+
+- **keyword_lists**: This is an array of objects, each representing a unique set of conditions for the bot to monitor. Each object in this array has the following properties:
+  - **keywords**: An array of strings. The bot will monitor chat messages for these keywords.
+  - **warning_message**: A string that defines the warning message the bot will send when a chat message matches the keywords.
+  - **external_link_required**: A boolean value. If set to `true`, the bot will only issue a warning if the message contains both the specified keywords and an external link.
+  - **required_roles**: An array of strings. If specified, the bot will only issue a warning if the message author has at least one of the roles in this list.
+
+Please note that all string comparisons performed by the bot are case-insensitive.
+
 ## Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for more details.
