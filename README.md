@@ -1,3 +1,9 @@
+[![Docker Build](https://github.com/rickstaa/warnings-discord-bot/actions/workflows/docker-build.yml/badge.svg)](https://github.com/rickstaa/warnings-discord-bot/actions/workflows/docker-build.yml)
+[![Publish Docker image](https://github.com/rickstaa/warnings-discord-bot/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/rickstaa/warnings-discord-bot/actions/workflows/docker-publish.yml)
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/rickstaa/warnings-discord-bot?logo=docker)
+](https://hub.docker.com/r/rickstaa/warnings-discord-bot)
+[![Latest Release](https://img.shields.io/github/v/release/rickstaa/warnings-discord-bot?label=latest%20release)](https://github.com/rickstaa/warnings-discord-bot/releases)
+
 # Warnings Discord Bot
 
 <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5061df29d55a92d945_full_logo_blurple_RGB.svg" width="200"><br>
