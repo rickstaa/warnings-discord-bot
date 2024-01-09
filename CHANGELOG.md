@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2](https://github.com/rickstaa/warnings-discord-bot/compare/v1.1.1...v1.1.2) (2024-01-09)
+
+
+### Bug Fixes
+
+* ensure the role parameters are linked to their keyword rule ([#18](https://github.com/rickstaa/warnings-discord-bot/issues/18)) ([d4bb1a4](https://github.com/rickstaa/warnings-discord-bot/commit/d4bb1a4d9d842f45fd8590f04484547318c98df1))
+* fix empty required roles not triggered bug ([#15](https://github.com/rickstaa/warnings-discord-bot/issues/15)) ([4f8175b](https://github.com/rickstaa/warnings-discord-bot/commit/4f8175b2b6a229d43a2a6d2566d51692ff2d897f))
+
 ## [1.1.1](https://github.com/rickstaa/warnings-discord-bot/compare/v1.1.0...v1.1.1) (2024-01-08)
 
 
