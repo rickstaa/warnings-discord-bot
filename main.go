@@ -108,12 +108,12 @@ func main() {
 
 			// If excluded roles are specified, check if the user has any of them.
 			if len(keywordList.ExcludedRoles) > 0 && hasRole(memberRoles, keywordList.ExcludedRoles) {
-				return // User has an excluded role, skip the warning message.
+				continue // User has an excluded role, skip the warning message.
 			}
 
 			// If required roles are specified, ensure the user has any of them.
 			if len(keywordList.RequiredRoles) > 0 && !hasRole(memberRoles, keywordList.RequiredRoles) {
-				return // User lacks a required role, skip the warning message.
+				continue // User lacks a required role, skip the warning message.
 			}
 
 			// Create a regular expression pattern dynamically for all keywords in the list with case-insensitivity.
