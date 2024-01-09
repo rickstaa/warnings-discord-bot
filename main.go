@@ -24,27 +24,14 @@ type Config struct {
 	} `json:"keyword_lists"`
 }
 
-const (
-	LINK_REGEX = `https?://[^\s/$.?#].[^\s]*`
-)
-
-// fetchRoles fetches the roles of a member and returns them as a map for easy lookup.
-func fetchRoles(s *discordgo.Session, guildID, memberID string) (map[string]bool, error) {
-	member, err := s.GuildMember(guildID, memberID)
-	if err != nil {
-		return nil, fmt.Errorf("error fetching member: %w", err)
-	}
-
-	roles := make(map[string]bool)
-	for _, roleID := range member.Roles {
-		role, err := s.State.Role(guildID, roleID)
-		if err != nil {
-			return nil, fmt.Errorf("error fetching role: %w", err)
+// hasRole checks if a user has any of the specified roles.
+func hasRole(memberRoles map[string]bool, roles []string) bool {
+	for _, role := range roles {
+		if memberRoles[role] {
+			return true
 		}
-		roles[role.Name] = true
 	}
-
-	return roles, nil
+	return false
 }
 
 func main() {
@@ -66,7 +53,11 @@ func main() {
 			}
 		}
 		keywordsPattern := `(?i)\b(` + strings.Join(keywordList.Keywords, "|") + `)\b`
-		config.KeywordLists[i].KeywordRegex = regexp.MustCompile(keywordsPattern)
+		compiledRegex, err := regexp.Compile(keywordsPattern)
+		if err != nil {
+			log.Fatalf("Error compiling regex: %v", err)
+		}
+		config.KeywordLists[i].KeywordRegex = compiledRegex
 	}
 
 	// Retrieve bot token.
@@ -80,51 +71,49 @@ func main() {
 	// Precompile the link regex.
 	linkRegex := regexp.MustCompile(`https?://[^\s/$.?#].[^\s]*`)
 
-	// Register the messageCreate callback
+	// Register the messageCreate callback.
 	dg.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
-		// Ignore messages sent by the bot itself
+		// Ignore messages sent by the bot itself.
 		if m.Author.ID == s.State.User.ID {
 			return
 		}
 
-		// Convert the message content to lowercase for case-insensitive comparison
+		// Convert the message content to lowercase for case-insensitive comparison.
 		content := strings.ToLower(m.Content)
 
-		// Check if the message contains any of the keywords from any keyword list
+		// Check if the message contains any of the keywords from any keyword list.
 		for _, keywordList := range config.KeywordLists {
-			// Check if external link is required and if the message contains one
+			// Check if external link is required and if the message contains one.
 			if keywordList.ExternalLinkRequired && !linkRegex.MatchString(content) {
-				continue // Skip if external link is required but not found
+				continue // Skip if external link is required but not found.
 			}
 
 			// Fetch the roles of the message sender
-			roles, err := fetchRoles(s, m.GuildID, m.Author.ID)
+			member, err := s.GuildMember(m.GuildID, m.Author.ID)
 			if err != nil {
-				log.Printf("%v", err)
-				return
-			}
-
-			// Check if the user has any of the required roles
-			hasRequiredRole := len(keywordList.RequiredRoles) == 0
-			for _, requiredRole := range keywordList.RequiredRoles {
-				if requiredRole != "" && roles[requiredRole] {
-					hasRequiredRole = true
-					break
-				}
-			}
-
-			// Check if the user has any of the excluded roles
-			hasExcludedRole := false
-			for _, excludedRole := range keywordList.ExcludedRoles {
-				if excludedRole != "" && roles[excludedRole] {
-					hasExcludedRole = true
-					break
-				}
-			}
-
-			// If the user has an excluded role or doesn't have any of the required roles, skip this message
-			if hasExcludedRole || !hasRequiredRole {
+				log.Printf("Error fetching member: %v", err)
 				continue
+			}
+
+			// Convert member roles to a map for efficient lookup
+			memberRoles := make(map[string]bool)
+			for _, roleID := range member.Roles {
+				role, err := s.State.Role(m.GuildID, roleID)
+				if err != nil {
+					log.Printf("Error fetching role: %v", err)
+					continue
+				}
+				memberRoles[role.Name] = true
+			}
+
+			// If excluded roles are specified, check if the user has any of them.
+			if len(keywordList.ExcludedRoles) > 0 && hasRole(memberRoles, keywordList.ExcludedRoles) {
+				return // User has an excluded role, skip the warning message.
+			}
+
+			// If required roles are specified, ensure the user has any of them.
+			if len(keywordList.RequiredRoles) > 0 && !hasRole(memberRoles, keywordList.RequiredRoles) {
+				return // User lacks a required role, skip the warning message.
 			}
 
 			// Create a regular expression pattern dynamically for all keywords in the list with case-insensitivity.
