@@ -10,6 +10,8 @@
 
 **Warnings Discord Bot** is a Discord bot written in Go that monitors messages for specific keywords or regular expressions and responds with warning messages. It can also send a welcome warning message to new members. It is designed to help maintain a respectful and safe chat environment within your Discord server.
 
+![image](https://github.com/rickstaa/warnings-discord-bot/assets/17570430/fd29682c-bf16-4c90-b8f8-2c0b6ac5d8f4)
+
 ## Features
 
 - **Real-time Chat Monitoring**: Actively scans all chat messages for specified keywords or regular expressions, ensuring no inappropriate content slips through the cracks.
