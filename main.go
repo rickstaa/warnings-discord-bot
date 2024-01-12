@@ -56,7 +56,7 @@ func hasRole(memberRoles map[string]bool, roles []string) bool {
 }
 
 // handleMessage handles a message sent in a guild.
-func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate, config Config, linkRegex *regexp2.Regexp) {
+func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate, config Config) {
 	// Ignore messages sent by the bot itself.
 	if m.Author.ID == s.State.User.ID {
 		return
@@ -91,6 +91,11 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate, config Conf
 		}
 
 		// Check if external link is required and if the message contains one.
+		linkRegex, err := regexp2.Compile(`https?://(?!(www\.)?discord(app)?\.com/channels/`+m.GuildID+`/)[^\s/$.?#].[^\s]*`, regexp2.None)
+		if err != nil {
+			log.Printf("Error compiling regex: %v", err)
+			return
+		}
 		if alertRules.ExternalLinkRequired {
 			match, err := linkRegex.MatchString(content)
 			if err != nil {
@@ -197,15 +202,9 @@ func main() {
 		log.Fatalf("Error creating Discord session: %v", err)
 	}
 
-	// Precompile the link regex.
-	linkRegex, err := regexp2.Compile(`https?://[^\s/$.?#].[^\s]*`, regexp2.None)
-	if err != nil {
-		log.Fatalf("Error compiling regex: %v", err)
-	}
-
 	// Register the messageCreate callback.
 	dg.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
-		handleMessage(s, m, config, linkRegex)
+		handleMessage(s, m, config)
 	})
 
 	// Start the bot.
