@@ -1,7 +1,9 @@
-// This Discord bot issues warnings when specific conditions are met.
+// Initializes a Discord bot that warns users when messages are posted that contain specified
+// keywords or regex patterns.
 //
-// Configured via a JSON file (config/config.json), it checks each guild message for specified keywords or regex patterns.
-// Upon a match, it responds with a warning message.
+// This bot can be configured via a JSON file (config/config.json), it checks each guild message
+// for specified keywords or regex atterns, upon a match, it responds with a warning message. It
+// can also post a welcome warning message to new members.
 package main
 
 import (
@@ -44,6 +46,46 @@ func loadConfig() (Config, error) {
 		return Config{}, fmt.Errorf("error parsing config JSON: %v", err)
 	}
 	return config, nil
+}
+
+// compileRegex compiles a regex pattern.
+func compileRegex(pattern string) (*regexp2.Regexp, error) {
+	compiledRegex, err := regexp2.Compile(pattern, regexp2.None)
+	if err != nil {
+		return nil, fmt.Errorf("error compiling regex: %v", err)
+	}
+	return compiledRegex, nil
+}
+
+// compileRegexPatterns compiles regex patterns from config keywords and patterns.
+func compileRegexPatterns(config *Config) error {
+	for i, alertRules := range config.AlertRules {
+		for j := range alertRules.RequiredRoles {
+			if alertRules.RequiredRoles[j] == "" {
+				config.AlertRules[i].RequiredRoles = []string{}
+			}
+		}
+
+		// If regex patterns are provided, compile them.
+		if len(alertRules.RegexPatterns) > 0 {
+			for _, pattern := range alertRules.RegexPatterns {
+				compiledRegex, err := compileRegex(pattern)
+				if err != nil {
+					return err
+				}
+				config.AlertRules[i].CompiledRegexes = append(config.AlertRules[i].CompiledRegexes, compiledRegex)
+			}
+		} else {
+			// If no regex patterns are provided, generate a regex pattern from the keywords.
+			pattern := `(?i)\b(` + strings.Join(alertRules.Keywords, "|") + `)\b`
+			compiledRegex, err := compileRegex(pattern)
+			if err != nil {
+				return err
+			}
+			config.AlertRules[i].CompiledRegexes = append(config.AlertRules[i].CompiledRegexes, compiledRegex)
+		}
+	}
+	return nil
 }
 
 // hasRole checks if a user has any of the specified roles.
@@ -186,31 +228,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error loading config: %v", err)
 	}
-	for i, alertRules := range config.AlertRules {
-		for j := range alertRules.RequiredRoles {
-			if alertRules.RequiredRoles[j] == "" {
-				config.AlertRules[i].RequiredRoles = []string{}
-			}
-		}
-
-		// If regex patterns are provided, compile them .
-		if len(alertRules.RegexPatterns) > 0 {
-			for _, pattern := range alertRules.RegexPatterns {
-				compiledRegex, err := regexp2.Compile(pattern, regexp2.None)
-				if err != nil {
-					log.Fatalf("Error compiling regex: %v", err)
-				}
-				config.AlertRules[i].CompiledRegexes = append(config.AlertRules[i].CompiledRegexes, compiledRegex)
-			}
-		} else {
-			// If no regex patterns are provided, generate a regex pattern from the keywords.
-			pattern := `(?i)\b(` + strings.Join(alertRules.Keywords, "|") + `)\b`
-			compiledRegex, err := regexp2.Compile(pattern, regexp2.None)
-			if err != nil {
-				log.Fatalf("Error compiling regex: %v", err)
-			}
-			config.AlertRules[i].CompiledRegexes = append(config.AlertRules[i].CompiledRegexes, compiledRegex)
-		}
+	err = compileRegexPatterns(&config)
+	if err != nil {
+		log.Fatalf("Error compiling regex patterns: %v", err)
 	}
 
 	// Retrieve bot token.
