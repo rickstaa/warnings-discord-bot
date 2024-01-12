@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.0.0](https://github.com/rickstaa/warnings-discord-bot/compare/v1.1.2...v2.0.0) (2024-01-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* add ability to specify regex ([#20](https://github.com/rickstaa/warnings-discord-bot/issues/20))
+
+### Features
+
+* add ability to only trigger on new members ([#23](https://github.com/rickstaa/warnings-discord-bot/issues/23)) ([29a9ef5](https://github.com/rickstaa/warnings-discord-bot/commit/29a9ef505e9b376a9c52b4b5af88b90a06dd2929))
+* add ability to specify regex ([#20](https://github.com/rickstaa/warnings-discord-bot/issues/20)) ([ff28c63](https://github.com/rickstaa/warnings-discord-bot/commit/ff28c639ab6e722a7ab532b613a7e1f33104f3b4))
+* add welcome warning feature ([#25](https://github.com/rickstaa/warnings-discord-bot/issues/25)) ([cbdc4ab](https://github.com/rickstaa/warnings-discord-bot/commit/cbdc4ab27e16baf00556b21aa6a082c302180e1b))
+* change reply to embed reply ([#22](https://github.com/rickstaa/warnings-discord-bot/issues/22)) ([847fe17](https://github.com/rickstaa/warnings-discord-bot/commit/847fe178cfeaaf9dfbbcc236c5b740b4e9e314d9))
+
+
+### Bug Fixes
+
+* ensure internal links don't trigger warnings ([#24](https://github.com/rickstaa/warnings-discord-bot/issues/24)) ([0039713](https://github.com/rickstaa/warnings-discord-bot/commit/00397134f96eee1a61725f25fdf79828a2faa6e4))
+
 ## [1.1.2](https://github.com/rickstaa/warnings-discord-bot/compare/v1.1.1...v1.1.2) (2024-01-09)
 
 
