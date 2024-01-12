@@ -1,4 +1,5 @@
 {
+  "join_warning_message": "",
   "alert_rules": [
     {
       "keywords": [
