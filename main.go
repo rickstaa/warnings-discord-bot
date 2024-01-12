@@ -112,8 +112,25 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate, config Conf
 				continue
 			}
 			if match {
-				// Reply with the warning message.
-				_, err := s.ChannelMessageSendReply(m.ChannelID, alertRules.WarningMessage, m.Reference())
+				// Create an embed.
+				embed := &discordgo.MessageEmbed{
+					Description: alertRules.WarningMessage,
+					Color:       0xff0000, // Red color.
+				}
+
+				// Create a message send struct.
+				messageSend := &discordgo.MessageSend{
+					Embed: embed,
+					Reference: &discordgo.MessageReference{
+						MessageID: m.ID,
+						ChannelID: m.ChannelID,
+						GuildID:   m.GuildID,
+					},
+				}
+
+				// Reply with the warning embed message.
+				_, err := s.ChannelMessageSendComplex(m.ChannelID, messageSend)
+				// _, err := s.ChannelMessageSendReply(m.ChannelID, alertRules.WarningMessage, m.Reference())
 				if err != nil {
 					log.Printf("Error sending message: %v", err)
 				}
