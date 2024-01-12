@@ -223,12 +223,12 @@ func main() {
 
 	// Register the messageCreate callback.
 	dg.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
-		handleMessage(s, m, config)
+		go handleMessage(s, m, config)
 	})
 
 	// Register the guildMemberAdd callback.
 	dg.AddHandler(func(s *discordgo.Session, m *discordgo.GuildMemberAdd) {
-		handleMemberJoin(s, m, config)
+		go handleMemberJoin(s, m, config)
 	})
 
 	// Add intents and start the bot.
