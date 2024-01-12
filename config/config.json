@@ -1,24 +1,36 @@
 {
-  "keyword_lists": [
+  "alert_rules": [
     {
       "keywords": [
         "DM",
         "direct message",
         "dmed"
       ],
+      "regex_patterns": [],
       "warning_message": "**🚨 Attention:** Be cautious of impersonators! The <TEAM_NAME> will never initiate direct messages (DMs) to users.",
       "external_link_required": false,
-      "excluded_roles": ["VIP"],
-      "required_roles": [""]
+      "excluded_roles": [
+        "VIP"
+      ],
+      "required_roles": [
+        ""
+      ]
     },
     {
       "keywords": [
         "ticket"
       ],
+      "regex_patterns": [
+        ""
+      ],
       "warning_message": "**🚨 Caution:** This message posted contains a link to an external site that isn't affiliated with the <TEAM_NAME> ticketing system.",
       "external_link_required": true,
-      "excluded_roles": [""],
-      "required_roles": ["unverified"]
+      "excluded_roles": [
+        ""
+      ],
+      "required_roles": [
+        "unverified"
+      ]
     }
   ]
 }
