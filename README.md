@@ -54,14 +54,18 @@ The bot's behaviour can be customized through the [config.json](config/config.js
 
 Here's a breakdown of the fields:
 
-- **keyword_lists**: This is an array of objects, each representing a unique set of conditions for the bot to monitor. Each object in this array has the following properties:
-  - **keywords**: An array of strings. The bot will monitor chat messages for these keywords.
+- **alert_rules**: An array of objects, each representing a unique alert rule. An alert rule defines conditions that, when met, trigger a bot warning. Each object has the following properties:
+  - **keywords**: An array of strings for the bot to monitor. Used only if no regex is provided.
+  - **regex_patterns**: An array of regular expressions for the bot to monitor. Overrides keywords if provided.
   - **warning_message**: A string that defines the warning message the bot will send when a chat message matches the keywords.
   - **external_link_required**: A boolean value. If set to `true`, the bot will only issue a warning if the message contains both the specified keywords and an external link.
   - **excluded_roles**: An array of strings. If specified, the bot will not issue a warning if the message author has at least one of the roles in this list.
   - **required_roles**: An array of strings. If specified, the bot will only issue a warning if the message author has at least one of the roles in this list.
 
-Please note that all string comparisons performed by the bot are case-insensitive.
+Please note that all keyword comparisons performed by the bot are case-insensitive.
+
+>[!IMPORTANT]\
+> When writing regular expressions in the JSON configuration file, remember to escape backslashes. For example, `\b(word)\b` should be written as `\\b(word)\\b`.
 
 ## Contributing
 
