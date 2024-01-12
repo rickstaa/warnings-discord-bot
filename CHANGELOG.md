@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.1](https://github.com/rickstaa/warnings-discord-bot/compare/v2.0.0...v2.0.1) (2024-01-12)
+
+
+### Bug Fixes
+
+* fix roles intent ([#26](https://github.com/rickstaa/warnings-discord-bot/issues/26)) ([de8a26b](https://github.com/rickstaa/warnings-discord-bot/commit/de8a26be97877cd792740793dc1c53d2c8a3bffa))
+
+
+### Performance Improvements
+
+* add goroutines ([#28](https://github.com/rickstaa/warnings-discord-bot/issues/28)) ([2318952](https://github.com/rickstaa/warnings-discord-bot/commit/2318952014f27f69567186a6d7a0768a7d500786))
+
 ## [2.0.0](https://github.com/rickstaa/warnings-discord-bot/compare/v1.1.2...v2.0.0) (2024-01-12)
 
 
