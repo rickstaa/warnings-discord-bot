@@ -19,7 +19,8 @@ import (
 
 // Config represents the configuration for the bot.
 type Config struct {
-	AlertRules []struct {
+	JoinWarningMessage string `json:"join_warning_message"`
+	AlertRules         []struct {
 		Keywords                 []string `json:"keywords"`
 		RegexPatterns            []string `json:"regex_patterns"`
 		WarningMessage           string   `json:"warning_message"`
@@ -159,6 +160,24 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate, config Conf
 	}
 }
 
+// handleMemberJoin handles a new member joining the guild.
+func handleMemberJoin(s *discordgo.Session, m *discordgo.GuildMemberAdd, config Config) {
+	// Only send a DM if JoinWarningMessage is defined.
+	if config.JoinWarningMessage != "" {
+		// Send a DM to the new member.
+		channel, err := s.UserChannelCreate(m.User.ID)
+		if err != nil {
+			log.Printf("Error creating DM channel: %v", err)
+			return
+		}
+
+		_, err = s.ChannelMessageSend(channel.ID, config.JoinWarningMessage)
+		if err != nil {
+			log.Printf("Error sending DM: %v", err)
+		}
+	}
+}
+
 func main() {
 	fmt.Println("Starting bot Warnings Bot...")
 
@@ -207,7 +226,13 @@ func main() {
 		handleMessage(s, m, config)
 	})
 
-	// Start the bot.
+	// Register the guildMemberAdd callback.
+	dg.AddHandler(func(s *discordgo.Session, m *discordgo.GuildMemberAdd) {
+		handleMemberJoin(s, m, config)
+	})
+
+	// Add intents and start the bot.
+	dg.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuildMembers | discordgo.IntentsGuildMessages)
 	err = dg.Open()
 	if err != nil {
 		log.Fatalf("Error opening connection to Discord: %v", err)
