@@ -13,23 +13,17 @@
       "excluded_roles": [
         "VIP"
       ],
-      "required_roles": [
-        ""
-      ],
+      "required_roles": [],
       "omit_members_older_than_days": 0 
     },
     {
       "keywords": [
         "ticket"
       ],
-      "regex_patterns": [
-        ""
-      ],
+      "regex_patterns": [],
       "warning_message": "**🚨 Caution:** This message posted contains a link to an external site that isn't affiliated with the <TEAM_NAME> ticketing system.",
       "external_link_required": true,
-      "excluded_roles": [
-        ""
-      ],
+      "excluded_roles": [],
       "required_roles": [
         "unverified"
       ],
