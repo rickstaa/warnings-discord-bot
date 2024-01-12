@@ -232,7 +232,7 @@ func main() {
 	})
 
 	// Add intents and start the bot.
-	dg.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuildMembers | discordgo.IntentsGuildMessages)
+	dg.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsAllWithoutPrivileged | discordgo.IntentsGuildMembers)
 	err = dg.Open()
 	if err != nil {
 		log.Fatalf("Error opening connection to Discord: %v", err)
