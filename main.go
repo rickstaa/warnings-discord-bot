@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/dlclark/regexp2"
@@ -19,13 +20,14 @@ import (
 // Config represents the configuration for the bot.
 type Config struct {
 	AlertRules []struct {
-		Keywords             []string `json:"keywords"`
-		RegexPatterns        []string `json:"regex_patterns"`
-		WarningMessage       string   `json:"warning_message"`
-		ExternalLinkRequired bool     `json:"external_link_required"`
-		RequiredRoles        []string `json:"required_roles"`
-		ExcludedRoles        []string `json:"excluded_roles"`
-		CompiledRegexes      []*regexp2.Regexp
+		Keywords                 []string `json:"keywords"`
+		RegexPatterns            []string `json:"regex_patterns"`
+		WarningMessage           string   `json:"warning_message"`
+		ExternalLinkRequired     bool     `json:"external_link_required"`
+		RequiredRoles            []string `json:"required_roles"`
+		ExcludedRoles            []string `json:"excluded_roles"`
+		OmitMembersOlderThanDays int      `json:"omit_members_older_than_days"`
+		CompiledRegexes          []*regexp2.Regexp
 	} `json:"alert_rules"`
 }
 
@@ -63,11 +65,29 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate, config Conf
 	// Convert the message content to lowercase for case-insensitive comparison.
 	content := strings.ToLower(m.Content)
 
-	// Check if the message contains any of the keywords from any keyword list.
+	// Check if the message contains any of the specified keywords or regex patterns.
 	for _, alertRules := range config.AlertRules {
-		// If both keywords and regex patterns are empty, skip this keyword list.
+		// If both keywords and regex patterns are empty, skip warning.
 		if len(alertRules.Keywords) == 0 && len(alertRules.RegexPatterns) == 0 {
 			continue
+		}
+
+		// If warning message is empty, skip this warning.
+		if alertRules.WarningMessage == "" {
+			continue
+		}
+
+		// Fetch member information.
+		member, err := s.GuildMember(m.GuildID, m.Author.ID)
+		if err != nil {
+			log.Printf("Error fetching member: %v", err)
+			continue
+		}
+
+		// Check if the user's membership is older than the specified number of days.
+		membershipDays := time.Since(member.JoinedAt).Hours() / 24
+		if alertRules.OmitMembersOlderThanDays > 0 && membershipDays > float64(alertRules.OmitMembersOlderThanDays) {
+			continue // Skip if the user's membership is too old.
 		}
 
 		// Check if external link is required and if the message contains one.
@@ -80,12 +100,6 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate, config Conf
 			if !match {
 				continue // Skip if external link is required but not found.
 			}
-		}
-		// Fetch the roles of the message sender
-		member, err := s.GuildMember(m.GuildID, m.Author.ID)
-		if err != nil {
-			log.Printf("Error fetching member: %v", err)
-			continue
 		}
 
 		// Convert member roles to a map for efficient lookup
