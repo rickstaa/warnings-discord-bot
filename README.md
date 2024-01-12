@@ -61,10 +61,11 @@ Here's a breakdown of the fields:
   - **external_link_required**: A boolean value. If set to `true`, the bot will only issue a warning if the message contains both the specified keywords and an external link.
   - **excluded_roles**: An array of strings. If specified, the bot will not issue a warning if the message author has at least one of the roles in this list.
   - **required_roles**: An array of strings. If specified, the bot will only issue a warning if the message author has at least one of the roles in this list.
+  - **omit_members_older_than_days**: An integer value. If set to a positive number, the bot will not issue a warning if the message author has been a member of the community for more days than the specified value. If set to 0 or a negative number, this rule is ignored.
 
 Please note that all keyword comparisons performed by the bot are case-insensitive.
 
->[!IMPORTANT]\
+> [!IMPORTANT]\
 > When writing regular expressions in the JSON configuration file, remember to escape backslashes. For example, `\b(word)\b` should be written as `\\b(word)\\b`.
 
 ## Contributing
