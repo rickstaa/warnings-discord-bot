@@ -8,7 +8,7 @@
 
 <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5061df29d55a92d945_full_logo_blurple_RGB.svg" width="200"><br>
 
-**Warnings Discord Bot** is a Discord bot written in Go that monitors messages for specific keywords or regular expressions and responds with warning messages. It can also send a welcome warning message to new members. It is designed to help maintain a respectful and safe chat environment within your Discord server.
+**Warnings Discord Bot** is a Discord bot written in Go that monitors messages for specific keywords or regular expressions and responds with warning messages. It can also send a welcome warning message to new members. It is designed to help maintain a respectful and safe chat environment within your Discord server. This bot was developed to overcome specific limitations in Discord Automod, such as the absence of an account age filter and the lack of a warning message options for 'Block Custom Words'. Further information can be found in the related community discussion [here](https://support.discord.com/hc/en-us/community/posts/20849181420055-Implement-Account-Age-Filter-for-Block-Custom-Words-in-Automod) and the feature request [here](https://support.discord.com/hc/en-us/requests/42283721).
 
 ![image](https://github.com/rickstaa/warnings-discord-bot/assets/17570430/fd29682c-bf16-4c90-b8f8-2c0b6ac5d8f4)
 
